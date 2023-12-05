@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
 import notesRoutes from './routes/notes';
 import morgan from 'morgan';
 import createHttpError, { isHttpError } from 'http-errors';
@@ -9,6 +10,7 @@ const app = express();
 app.use(morgan('dev'));
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/notes', notesRoutes);
 
