@@ -1,3 +1,7 @@
 .cardText {
     white-space: pre-line;
 }
+
+.link-item {
+    cursor: pointer;
+}
