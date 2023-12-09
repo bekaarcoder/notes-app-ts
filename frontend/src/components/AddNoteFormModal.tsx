@@ -1,8 +1,10 @@
-import { Modal } from 'react-bootstrap';
-import { Note } from '../models/note';
 import { useForm } from 'react-hook-form';
-import { NoteInput } from '../api/notesApi';
 import * as NotesApi from '../api/notesApi';
+import { NoteInput } from '../api/notesApi';
+import { Note } from '../models/note';
+import AppModal from './AppModal';
+import TextAreaInputField from './form/TextAreaInputField';
+import TextInputField from './form/TextInputField';
 
 interface Props {
     noteToEdit?: Note;
@@ -37,69 +39,48 @@ const AddNoteFormModal = ({ onDismiss, onNoteSaved, noteToEdit }: Props) => {
     };
 
     return (
-        <Modal show onHide={onDismiss} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {noteToEdit ? 'Update note' : 'Create a note'}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="mb-3">
-                        <label className="form-label">Title</label>
-                        <input
-                            type="text"
-                            className={`form-control ${
-                                errors.title ? 'is-invalid' : ''
-                            }`}
-                            {...register('title', {
-                                required: 'Note title is required',
-                            })}
-                        />
-                        <div className="invalid-feedback">
-                            {errors.title?.message}
-                        </div>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label">Description</label>
-                        <textarea
-                            className={`form-control ${
-                                errors.text ? 'is-invalid' : ''
-                            }`}
-                            rows={5}
-                            {...register('text')}
-                        ></textarea>
-                        <div className="invalid-feedback">
-                            {errors.text?.message}
-                        </div>
-                    </div>
-                    <div className="d-grid">
-                        <button
-                            type="submit"
-                            className="btn btn-dark"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <span
-                                        className="spinner-border spinner-border-sm"
-                                        aria-hidden="true"
-                                    ></span>
-                                    <span
-                                        className="visually-hidden"
-                                        role="status"
-                                    >
-                                        Loading...
-                                    </span>
-                                </>
-                            ) : (
-                                <span>Save Note</span>
-                            )}
-                        </button>
-                    </div>
-                </form>
-            </Modal.Body>
-        </Modal>
+        <AppModal
+            title={noteToEdit ? 'Update note' : 'Create a note'}
+            onDismiss={onDismiss}
+        >
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <TextInputField
+                    name="title"
+                    label="Title"
+                    type="text"
+                    register={register}
+                    registerOptions={{ required: 'Title is required' }}
+                    error={errors.title}
+                />
+                <TextAreaInputField
+                    name="text"
+                    label="Description"
+                    rows={5}
+                    register={register}
+                />
+                <div className="d-grid">
+                    <button
+                        type="submit"
+                        className="btn btn-dark"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <span
+                                    className="spinner-border spinner-border-sm"
+                                    aria-hidden="true"
+                                ></span>
+                                <span className="visually-hidden" role="status">
+                                    Loading...
+                                </span>
+                            </>
+                        ) : (
+                            <span>Save Note</span>
+                        )}
+                    </button>
+                </div>
+            </form>
+        </AppModal>
     );
 };
 
