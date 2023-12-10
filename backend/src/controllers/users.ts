@@ -1,7 +1,9 @@
 import { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import User from '../models/User';
+import sendEmail from '../util/mailer';
 
 interface SignUpBody {
     username?: string;
@@ -86,7 +88,10 @@ export const singIn: RequestHandler<
         }
 
         req.session.userId = user._id;
-        res.status(200).json(user);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: userPassword, ...userWithoutPassword } =
+            user.toObject();
+        res.status(200).json(userWithoutPassword);
     } catch (error) {
         next(error);
     }
@@ -113,4 +118,99 @@ export const logout: RequestHandler = (req, res, next) => {
             res.sendStatus(200);
         }
     });
+};
+
+interface PasswordResetRequestBody {
+    emailOrUsername?: string;
+}
+
+export const requestPasswordReset: RequestHandler<
+    unknown,
+    unknown,
+    PasswordResetRequestBody,
+    unknown
+> = async (req, res, next) => {
+    const emailOrUsername = req.body.emailOrUsername;
+
+    try {
+        if (!emailOrUsername) {
+            throw createHttpError(400, 'Email or username is required');
+        }
+
+        const user = await User.findOne({
+            $or: [{ username: emailOrUsername }, { email: emailOrUsername }],
+        })
+            .select('+email')
+            .exec();
+        if (!user) {
+            throw createHttpError(400, 'User not found');
+        }
+
+        const passwordResetToken = crypto.randomBytes(20).toString('hex');
+
+        const resetLink = `http://localhost:5173/reset-password/${passwordResetToken}`;
+
+        user.resetToken = passwordResetToken;
+        user.resetTokenExpires = new Date(Date.now() + 5 * 60 * 60 * 1000);
+        await user.save();
+
+        await sendEmail({
+            from: 'test@example.com',
+            to: user.email,
+            subject: 'Password Reset Request',
+            text: `Hi ${user.username}, we have recieved a password reset request from your side. If you have requested for the password reset, please click the following link to reset your password: ${resetLink}. The link will expire in 5 hours.`,
+        });
+
+        res.status(200).json({ success: 'Email sent for pasword reset' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+interface ResetPasswordParams {
+    resetToken: string;
+}
+
+interface ResetPasswordBody {
+    newPassword?: string;
+    confirmPassword?: string;
+}
+
+export const resetPassword: RequestHandler<
+    ResetPasswordParams,
+    unknown,
+    ResetPasswordBody,
+    unknown
+> = async (req, res, next) => {
+    const resetToken = req.params.resetToken;
+    const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
+
+    try {
+        if (!newPassword || !confirmPassword) {
+            throw createHttpError(400, 'Parameters missing');
+        }
+
+        if (newPassword !== confirmPassword) {
+            throw createHttpError(400, 'Passwords do not match');
+        }
+
+        const user = await User.findOne({
+            resetToken: resetToken,
+            resetTokenExpires: { $gt: Date.now() },
+        }).exec();
+        if (!user) {
+            throw createHttpError(400, 'Invalid or expired token');
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetToken = undefined;
+        user.resetTokenExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ success: 'Password reset successful' });
+    } catch (error) {
+        next(error);
+    }
 };

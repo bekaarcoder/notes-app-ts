@@ -17,6 +17,14 @@ const userSchema = new Schema({
         required: true,
         select: false,
     },
+    resetToken: {
+        type: String,
+        select: false,
+    },
+    resetTokenExpires: {
+        type: Date,
+        select: false,
+    },
 });
 
 type User = InferSchemaType<typeof userSchema>;

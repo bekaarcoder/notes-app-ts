@@ -12,4 +12,8 @@ router.post('/signin', UserController.singIn);
 
 router.post('/logout', UserController.logout);
 
+router.post('/reset-password', UserController.requestPasswordReset);
+
+router.post('/reset-password/:resetToken', UserController.resetPassword);
+
 export default router;
