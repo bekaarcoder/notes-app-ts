@@ -7,6 +7,7 @@ import TextInputField from './form/TextInputField';
 import { useState } from 'react';
 import AppError from './AppError';
 import { BadRequestError, UnauthorizedError } from '../errors/HttpError';
+import { Link } from 'react-router-dom';
 
 interface Props {
     onDismiss: () => void;
@@ -78,6 +79,9 @@ const SignInModal = ({ onDismiss, onSignInSuccessful }: Props) => {
                             <span>Sign In</span>
                         )}
                     </button>
+                </div>
+                <div className="text-center my-2">
+                    <Link to="/forget-password">Forgot your password?</Link>
                 </div>
             </form>
         </AppModal>

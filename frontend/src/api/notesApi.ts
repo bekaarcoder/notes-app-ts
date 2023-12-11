@@ -5,6 +5,7 @@ import {
     UnauthorizedError,
 } from '../errors/HttpError';
 import { Note } from '../models/note';
+import { ResponseMessage } from '../models/response';
 import { User } from '../models/user';
 
 const fetchData = async (input: RequestInfo, init?: RequestInit) => {
@@ -115,4 +116,21 @@ export const logout = async () => {
     await fetchData('/api/users/logout', {
         method: 'POST',
     });
+};
+
+export interface PasswordResetRequestBody {
+    emailOrUsername: string;
+}
+
+export const requestResetPassword = async (
+    requestBody: PasswordResetRequestBody
+): Promise<ResponseMessage> => {
+    const response = await fetchData('/api/users/reset-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    });
+    return response.json();
 };

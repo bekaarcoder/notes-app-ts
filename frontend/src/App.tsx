@@ -11,18 +11,6 @@ function App() {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const [showSignUpModal, setShowSignUpModal] = useState(false);
     const [showSignInModal, setShowSignInModal] = useState(false);
-    // const [notes, setNotes] = useState<NoteModel[]>([]);
-    // const [showModal, setShowModal] = useState(false);
-    // const [noteToUpdate, setNoteToUpdate] = useState<NoteModel | null>(null);
-
-    // const deleteNote = async (note: NoteModel) => {
-    //     try {
-    //         await NotesApi.deleteNote(note._id);
-    //         setNotes(notes.filter((n) => n._id !== note._id));
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
 
     const onLogout = async () => {
         try {
@@ -32,20 +20,6 @@ function App() {
             console.log(error);
         }
     };
-
-    // useEffect(() => {
-    //     const fetchNotes = async () => {
-    //         try {
-    //             const notes = await NotesApi.fetchNotes();
-    //             console.log(notes);
-    //             setNotes(notes);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-
-    //     fetchNotes();
-    // }, []);
 
     useEffect(() => {
         const fetchLoggedInUser = async () => {
