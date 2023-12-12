@@ -134,3 +134,22 @@ export const requestResetPassword = async (
     });
     return response.json();
 };
+
+export interface NewPasswordBody {
+    newPassword: string;
+    confirmPassword: string;
+}
+
+export const resetPassword = async (
+    token: string,
+    requestBody: NewPasswordBody
+): Promise<ResponseMessage> => {
+    const response = await fetchData(`/api/users/reset-password/${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    });
+    return response.json();
+};

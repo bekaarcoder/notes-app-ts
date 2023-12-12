@@ -4,6 +4,7 @@ import App from './App';
 import Profile from './pages/Profile';
 import PrivateRoute from './pages/PrivateRoute';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const router = createBrowserRouter([
     {
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <App /> },
             { path: 'forget-password', element: <ForgotPassword /> },
+            { path: 'reset-password/:token', element: <ResetPassword /> },
         ],
     },
     {
