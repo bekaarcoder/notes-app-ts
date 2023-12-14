@@ -11,6 +11,7 @@ function App() {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const [showSignUpModal, setShowSignUpModal] = useState(false);
     const [showSignInModal, setShowSignInModal] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const onLogout = async () => {
         try {
@@ -29,10 +30,14 @@ function App() {
             } catch (error) {
                 console.error(error);
                 setLoggedInUser(null);
+            } finally {
+                setLoading(false);
             }
         };
         fetchLoggedInUser();
     }, []);
+
+    if (loading) return <></>;
 
     return (
         <div className="container my-4">
