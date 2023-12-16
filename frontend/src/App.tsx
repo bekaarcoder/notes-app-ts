@@ -1,52 +1,14 @@
-import { useEffect, useState } from 'react';
 import './App.css';
-import * as NotesApi from './api/notesApi';
-import AppNavbar from './components/AppNavbar';
 import Notes from './components/Notes';
-import SignInModal from './components/SignInModal';
-import SignUpModal from './components/SignUpModal';
-import { User } from './models/user';
+import { useUserContext } from './hooks/useUserContext';
 
 function App() {
-    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-    const [showSignUpModal, setShowSignUpModal] = useState(false);
-    const [showSignInModal, setShowSignInModal] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    const onLogout = async () => {
-        try {
-            await NotesApi.logout();
-            setLoggedInUser(null);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    useEffect(() => {
-        const fetchLoggedInUser = async () => {
-            try {
-                const user = await NotesApi.getLoggedInUser();
-                setLoggedInUser(user);
-            } catch (error) {
-                console.error(error);
-                setLoggedInUser(null);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchLoggedInUser();
-    }, []);
+    const { loggedInUser, loading } = useUserContext();
 
     if (loading) return <></>;
 
     return (
-        <div className="container my-4">
-            <AppNavbar
-                loggedInUser={loggedInUser}
-                onLogout={onLogout}
-                setShowSignInModal={() => setShowSignInModal(true)}
-                setShowSignUpModal={() => setShowSignUpModal(true)}
-            />
+        <>
             {loggedInUser ? (
                 <Notes />
             ) : (
@@ -59,27 +21,7 @@ function App() {
                     </div>
                 </div>
             )}
-
-            {showSignUpModal && (
-                <SignUpModal
-                    onDismiss={() => setShowSignUpModal(false)}
-                    onSignUpSuccessful={(user) => {
-                        setLoggedInUser(user);
-                        setShowSignUpModal(false);
-                    }}
-                />
-            )}
-
-            {showSignInModal && (
-                <SignInModal
-                    onDismiss={() => setShowSignInModal(false)}
-                    onSignInSuccessful={(user) => {
-                        setLoggedInUser(user);
-                        setShowSignInModal(false);
-                    }}
-                />
-            )}
-        </div>
+        </>
     );
 }
 

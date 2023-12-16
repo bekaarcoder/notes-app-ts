@@ -5,9 +5,12 @@ import ReactDOM from 'react-dom/client';
 import router from './routes.tsx';
 import './index.css';
 import { RouterProvider } from 'react-router-dom';
+import { UserContextProvider } from './context/UserContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <UserContextProvider>
+            <RouterProvider router={router} />
+        </UserContextProvider>
     </React.StrictMode>
 );

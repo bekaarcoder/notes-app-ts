@@ -81,7 +81,9 @@ const SignInModal = ({ onDismiss, onSignInSuccessful }: Props) => {
                     </button>
                 </div>
                 <div className="text-center my-2">
-                    <Link to="/forget-password">Forgot your password?</Link>
+                    <Link to="/forget-password" onClick={onDismiss}>
+                        Forgot your password?
+                    </Link>
                 </div>
             </form>
         </AppModal>
