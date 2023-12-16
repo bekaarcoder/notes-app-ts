@@ -5,7 +5,7 @@
 
 ## Overview
 
-A full-stack **Note Taking application** built using the MERN (MongoDB, Express.js, React, Node.js) stack. This application allows users to create, read, update, and delete notes with user authentication and password reset functionality. The frontend is developed with Vite, React Router, react-hook-form, and Bootstrap for a responsive and intuitive user interface. The backend utilizes Express.js with mongoose for seamless database connectivity. Nodemailer is integrated for secure password reset features.
+A full-stack **Note Taking application** built using the MERN (MongoDB, Express.js, React, Node.js) stack. This application allows users to create, read, update, and delete notes with user authentication and password reset functionality. The frontend is developed with Vite, React Router, React Context API, react-hook-form, and Bootstrap for a responsive and intuitive user interface. The backend utilizes Express.js with mongoose for seamless database connectivity. Nodemailer is integrated for secure password reset features.
 
 ## Table of Contents
 
@@ -19,6 +19,7 @@ A full-stack **Note Taking application** built using the MERN (MongoDB, Express.
 -   **CRUD Operations:** Create, read, update, and delete notes.
 -   **User Authentication:** Utilizes express-session for secure user authentication.
 -   **Password Reset:** Nodemailer integration for secure password reset functionality.
+-   **State Management (React Context API)** Handles the state of the logged-in user for a seamless user experience.
 -   **Responsive UI:** Developed with Bootstrap for a seamless user experience.
 
 ## Technologies Used
